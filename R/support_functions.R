@@ -248,6 +248,7 @@ find_subtree <- function(rootnode, object.dtree){
 #' as well as forcing the dependent variable (class) to be a factor
 #'
 #' @param data A dataframe
+#' @param weights Weights
 #' @param features Character array of the features that will be used in training the OCT
 #' @param dep_var Character that indicated the dependent variable (class name)
 #' @return A list with data being a dataframe with normalized numeric features, and all other variables factors,

@@ -9,6 +9,8 @@ prepare_dataset(data, weights, features, dep_var)
 \arguments{
 \item{data}{A dataframe}
 
+\item{weights}{Weights}
+
 \item{features}{Character array of the features that will be used in training the OCT}
 
 \item{dep_var}{Character that indicated the dependent variable (class name)}
