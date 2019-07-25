@@ -17,6 +17,7 @@
 #' @param misclassification_weights
 #' @return An object of class dtree that is the optimal classification tree
 #' @export
+#' @importFrom parallel mclapply
 optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsize = 1, numbertries = 10, misclassification_weights = NULL){
   if (is.null(weights)) weights <- rep(1, nrow(data))
   if (nrow(data) != length(weights)) stop("dataframe row dimension and weights length must be the same")
