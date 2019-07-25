@@ -11,6 +11,7 @@ complexity_tree_fun <- function(object.dtree){
 #' If there is a whole depth layer of 'branchnodes' that contains no branch node, this dimension is removed
 #' @param object.dtree Object of class dtree
 #' @return Object of class dtree
+#' @importFrom useful compare.list
 cut_tree_fun <- function(object.dtree){
   A <- object.dtree@A; bvec <- object.dtree@bvec; cats <- object.dtree@cats
   if (all(A == 0)) return(object.dtree)
@@ -25,66 +26,21 @@ cut_tree_fun <- function(object.dtree){
   return(object.dtree)
 }
 
-#' Basic analysis of performance of dtree ob dataset
+#' Basic analysis of performance of dtree of dataset
 #'
 #' Finds the classes associated with leaf nodes, the misclassification per leaf node and the minimum
 #' leaf size.
 #'
 #' @param object.dtree Object of class dtree
 #' @param data A dataframe with features and dependent variable class.
+#' @param weights Weights
+#' @param misclassification_weights Misclassification weights
 #' @return A list with leaf_classes an factor array of classes prescribed by each leaf node,
 #' misclass a numeric array of the misclassification on the data associated with each leaf node, and
 #' minleafsize the minimum leaf size in a leaf node.
-find_class_leafs_and_misclass_and_min_leaf_size_fun <- function(object.dtree, data){
-  if (length(object.dtree@bvec) == 0){
-    dep_values <- unlist(select(data, object.dtree@dep_var), use.names = F)
-    cl <- get_class_node(dep_values)
-    misclass <-  sum(dep_values != cl)
-    return(list(leaf_classes = cl,
-                misclass = misclass,
-                minleafsize = length(dep_values)))
-  }
-  Z <- find_pos_points(object.dtree, data)
-  dep_values <- unlist(select(data, object.dtree@dep_var), use.names = F)
-  number_nodes <- dim(Z)[2]
-  leaf_nodes <- ((number_nodes + 1) / 2):number_nodes
-  leaf_classes <- rep(NA, length(leaf_nodes))
-  misclass <- rep(0, length(leaf_nodes))
-  index <- 1
-  for (node in leaf_nodes){
-    indexset <- which(Z[, node] == 1)
-    if (length(indexset) != 0){
-      node_classes <- dep_values[indexset]
-      leaf_classes[index] <- as.character(get_class_node(node_classes))
-      misclass[index] <- sum(node_classes != leaf_classes[index])
-    }
-    index <- index + 1
-  }
-  work_with_this_node <- function(node, object.dtree){
-    if (node == 1) {
-      T
-    } else {
-      A <- object.dtree@A
-      pnode <- find_parent_node(node)
-      if (any(A[,pnode] == 1)) {T} else {F}
-    }
-  }
-  indexset <- sapply(X = 1:(dim(Z)[2]), FUN = work_with_this_node, object.dtree = object.dtree)
-  minleafsize <- min(colSums(Z)[indexset])
-  return(list(leaf_classes = leaf_classes, misclass = misclass, minleafsize = minleafsize))
-}
-
-#' Basic analysis of performance of dtree ob dataset
-#'
-#' Finds the classes associated with leaf nodes, the misclassification per leaf node and the minimum
-#' leaf size.
-#'
-#' @param object.dtree Object of class dtree
-#' @param data A dataframe with features and dependent variable class.
-#' @return A list with leaf_classes an factor array of classes prescribed by each leaf node,
-#' misclass a numeric array of the misclassification on the data associated with each leaf node, and
-#' minleafsize the minimum leaf size in a leaf node.
-find_where_and_leafs <- function(object.dtree, data, weights, misclassification_weights) {
+#' @importFrom dplyr select
+#' @export
+find_where_and_leafs <- function(object.dtree, data, weights, misclassification_weights = NULL) {
   dep_values <- unlist(select(data, object.dtree@dep_var), use.names = F); classes <- unique(dep_values)
   leafs <- (length(object.dtree@bvec) + 1):(length(object.dtree@bvec) * 2 + 1)
   Z <- find_pos_points(object.dtree, data)
@@ -96,25 +52,18 @@ find_where_and_leafs <- function(object.dtree, data, weights, misclassification_
     tab}))
   if (length(classes) == 1) where <- t(where)
   colnames(where) <- classes
+  if (is.null(misclassification_weights)) {
+    W <- matrix(1, length(classes), length(classes)) - diag(length(classes))
+  } else {
+    which_W <- sapply(classes, function(x) which(x == rownames(misclassification_weights))); W <- misclassification_weights[which_W, which_W];
+    leaf_classes <- apply(where %*% t(W), 1, function(x) {
+      if (all(x == 0)) {NA} else {as.character(classes[which(x == min(x))[1]])}
+    })
+  }
 
-  which_W <- sapply(classes, function(x) which(x == rownames(misclassification_weights))); W <- misclassification_weights[which_W, which_W];
-  leaf_classes <- apply(where %*% t(W), 1, function(x) {
-    if (all(x == 0)) {NA} else {as.character(classes[which(x == min(x))[1]])}
-  })
   weighted_misclass <- sum(apply(where %*% t(W), 1, min))
   return(list(leaf_classes = leaf_classes, where = where, weighted_misclass = weighted_misclass))
 }
-
-#' Find the classification from a set of observations
-#'
-#' @param obs A numeric array with classes
-#' @return The most prevalent class
-get_class_node <- function(obs) {
-  uniqobs <- unique(obs)
-  as.character(uniqobs[which.max(tabulate(match(obs, uniqobs)))])
-}
-
-
 
 #' Find position of all data points in tree
 #'
@@ -122,6 +71,7 @@ get_class_node <- function(obs) {
 #' @param data A dataframe with features and dependent variable class.
 #' @return A matrix in which each row indicated a observation and each column indicates a node. A 1 in
 #' position (i, j) indicated that observation i is in node j.
+#' @importFrom dplyr select
 find_pos_points <- function(object.dtree, data){
   number_branch_nodes <- length(object.dtree@bvec)
   number_nodes <- number_branch_nodes * 2 + 1
@@ -253,7 +203,6 @@ find_subtree <- function(rootnode, object.dtree){
 #' @param dep_var Character that indicated the dependent variable (class name)
 #' @return A list with data being a dataframe with normalized numeric features, and all other variables factors,
 #' and a matrix with the minimum and maximum values of all numeric features.
-#' @export
 #' @importFrom dplyr select
 prepare_dataset <- function(data, weights, features, dep_var){
   norm_feat <- function(value, minvec, maxvec){

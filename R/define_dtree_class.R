@@ -12,13 +12,22 @@
 #' @slot dep_var A character string for the dependent variable
 #' @slot leaf_classes The predicted class for point in certain leaf node
 #' @slot features A character vector of all p feature on which the tree is built.
-setClass("dtree",
+#' @export dtree
+dtree <- setClass("dtree",
          slots=list(A = "matrix",
                     bvec = "numeric",
                     cats = "list",
                     dep_var = "character",
                     leaf_classes = "character",
                     features = "character"))
+
+# define class tree and methods -----
+
+
+#' Displays object of 'dtree' class
+#' @docType methods
+#' @rdname dtree-method
+#' @export
 
 setMethod("show",
           "dtree",
@@ -67,6 +76,28 @@ setMethod("show",
             }
           }
 )
+#' Predict Method for dtree Fits
+#'
+# #' @param object An object of class dtree
+# #' @param newdata A data frame
+# #' @return An array of predicted classes for each observationin the newdata data frame.
+#' @export
+setMethod('predict',
+          signature(object="dtree"),
+          function(object, newdata, ...){
+            if (missing(newdata)){
+              return('Error: needs new data')
+            }
+            leafs <- (length(object@bvec) + 1):(length(object@bvec) * 2 + 1)
+            leaf_classes <- object@leaf_classes
+            Z <- find_pos_points(object, newdata)
+            y <- sapply(1:dim(Z)[1], function(rowindex){
+              whichleaf <- which(Z[rowindex, leafs] == 1)
+              yel <- leaf_classes[whichleaf]
+            })
+            as.factor(y)
+          })
+
 
 
 make_order <- function(depthtree){
@@ -102,6 +133,12 @@ make_order <- function(depthtree){
 #'              dep_var = 'Species', leaf_classes = c(NA, 'setosa', 'versicolor', 'virginica'),
 #'              features = c("Sepal.Length", "Sepal.Width",  "Petal.Length", "Petal.Width"))
 #' visualize_tree(tree1)
+#' @importFrom diagram coordinates
+#' @importFrom diagram openplotmat
+#' @importFrom diagram bentarrow
+#' @importFrom diagram textrect
+#' @importFrom diagram textempty
+#' @importFrom diagram textellipse
 visualize_tree <- function(object.dtree){
   A <- object.dtree@A; bvec <- object.dtree@bvec; cats <- object.dtree@cats;
   leaf_classes <- object.dtree@leaf_classes; features <- object.dtree@features
@@ -176,29 +213,22 @@ visualize_tree <- function(object.dtree){
   }
 }
 
-#' Predict Method for dtree Fits
+#' Visualize decision tree with data
 #'
-#' @param object An object of class dtree
-#' @param newdata A data frame
-#' @return An array of predicted classes for each observationin the newdata data frame.
-setMethod('predict',
-          signature(object="dtree"),
-          function(object, newdata, ...){
-            if (missing(newdata)){
-              return('Error: needs new data')
-            }
-            leafs <- (length(object@bvec) + 1):(length(object@bvec) * 2 + 1)
-            leaf_classes <- object@leaf_classes
-            Z <- find_pos_points(object, newdata)
-            y <- sapply(1:dim(Z)[1], function(rowindex){
-              whichleaf <- which(Z[rowindex, leafs] == 1)
-              yel <- leaf_classes[whichleaf]
-            })
-            as.factor(y)
-          })
-
-
-
+#' \code{visualize_tree} plots the decision tree including splits and
+#' leaf assignments in the plot window and prints splits and leafs in command window.
+#'
+#' @param object.tree an object of class \code{dtree}
+#' @param data dataframe
+#' @param weights weights
+#' @export
+#' @importFrom dplyr select
+#' @importFrom diagram coordinates
+#' @importFrom diagram openplotmat
+#' @importFrom diagram bentarrow
+#' @importFrom diagram textrect
+#' @importFrom diagram textempty
+#' @importFrom diagram textellipse
 visualize_tree_data <- function(object.dtree, data, weights){
   A <- object.dtree@A; bvec <- object.dtree@bvec; cats <- object.dtree@cats;
   leaf_classes <- object.dtree@leaf_classes; features <- object.dtree@features

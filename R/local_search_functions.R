@@ -13,6 +13,8 @@
 #' with the root node counted as depth 0.
 #' @return A list of two, where the first element is an object of class dtree and the second
 #' element is the loss associated with the dtree.
+#' @export
+#' @importFrom dplyr select
 local_search <- function(object.dtree, data, weights = NULL, alpha = 0, minleafsize = 1, maxdepth = 6, misclassification_weights = NULL){
   if (is.null(weights)) weights <- rep(1, nrow(data))
   if (nrow(data) != length(weights)) stop("dataframe row dimension and weights length must be the same")
@@ -153,6 +155,7 @@ local_search <- function(object.dtree, data, weights = NULL, alpha = 0, minleafs
 #' @param minleafsize The minimum number of observations in any terminal <leaf> node.
 #' @return A list of two, where the first element is an object of class dtree and the second
 #' element is a logical value indicating if the subtree has changed.
+#'
 optimize_node_parallel <- function(subtree, datasub, weightssub, data, weights, alpha, minleafsize, misclassification_weights){
 
   # Define loss function

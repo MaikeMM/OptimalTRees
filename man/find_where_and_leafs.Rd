@@ -2,15 +2,19 @@
 % Please edit documentation in R/support_functions.R
 \name{find_where_and_leafs}
 \alias{find_where_and_leafs}
-\title{Basic analysis of performance of dtree ob dataset}
+\title{Basic analysis of performance of dtree of dataset}
 \usage{
 find_where_and_leafs(object.dtree, data, weights,
-  misclassification_weights)
+  misclassification_weights = NULL)
 }
 \arguments{
 \item{object.dtree}{Object of class dtree}
 
 \item{data}{A dataframe with features and dependent variable class.}
+
+\item{weights}{Weights}
+
+\item{misclassification_weights}{Misclassification weights}
 }
 \value{
 A list with leaf_classes an factor array of classes prescribed by each leaf node,

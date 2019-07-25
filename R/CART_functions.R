@@ -10,6 +10,8 @@
 #' @param dep_var The dependent variable. If empty the last column
 #' name of the dataframe will be taken as dependent variable.
 #' @return An object of class dtree
+#' @export
+#' @importFrom dplyr select
 makeCART <- function(data, weights = NULL, minleafsize = 1, maxdepth = 6, features = NULL, dep_var = NULL){
   if (missing(data)) stop('data is missing with no default')
 
@@ -153,8 +155,6 @@ makeCART <- function(data, weights = NULL, minleafsize = 1, maxdepth = 6, featur
     return(list(object.dtree = object.dtree, splitpossible = splitpossible))
   }
 
-
-
   numberfeatures <- length(features)
   numberfeatures_split <- floor(sqrt(numberfeatures))
 
@@ -201,7 +201,7 @@ makeCART <- function(data, weights = NULL, minleafsize = 1, maxdepth = 6, featur
       object.dtree <- cut_tree_fun(object.dtree)
     }
   }
-  object.dtree@leaf_classes <- find_class_leafs_and_misclass_and_min_leaf_size_fun(object.dtree, data)$leaf_classes
+  object.dtree@leaf_classes <- find_where_and_leafs(object.dtree, data, weights)
   return(object.dtree)
 }
 

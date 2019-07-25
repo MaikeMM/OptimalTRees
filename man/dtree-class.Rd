@@ -3,6 +3,7 @@
 \docType{class}
 \name{dtree-class}
 \alias{dtree-class}
+\alias{dtree}
 \title{An S4 class to represent a decision tree.}
 \description{
 An S4 class to represent a decision tree.

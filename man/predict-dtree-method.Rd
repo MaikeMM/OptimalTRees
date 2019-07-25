@@ -7,14 +7,6 @@
 \usage{
 \S4method{predict}{dtree}(object, newdata, ...)
 }
-\arguments{
-\item{object}{An object of class dtree}
-
-\item{newdata}{A data frame}
-}
-\value{
-An array of predicted classes for each observationin the newdata data frame.
-}
 \description{
 Predict Method for dtree Fits
 }
