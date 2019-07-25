@@ -56,11 +56,10 @@ find_where_and_leafs <- function(object.dtree, data, weights, misclassification_
     W <- matrix(1, length(classes), length(classes)) - diag(length(classes))
   } else {
     which_W <- sapply(classes, function(x) which(x == rownames(misclassification_weights))); W <- misclassification_weights[which_W, which_W];
-    leaf_classes <- apply(where %*% t(W), 1, function(x) {
-      if (all(x == 0)) {NA} else {as.character(classes[which(x == min(x))[1]])}
-    })
   }
-
+  leaf_classes <- apply(where %*% t(W), 1, function(x) {
+    if (all(x == 0)) {NA} else {as.character(classes[which(x == min(x))[1]])}
+  })
   weighted_misclass <- sum(apply(where %*% t(W), 1, min))
   return(list(leaf_classes = leaf_classes, where = where, weighted_misclass = weighted_misclass))
 }
