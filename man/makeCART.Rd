@@ -4,7 +4,8 @@
 \alias{makeCART}
 \title{CART procedure - random subset of features considered}
 \usage{
-makeCART(data, minleafsize, maxdepth, features = NULL, dep_var = NULL)
+makeCART(data, weights = NULL, minleafsize = 1, maxdepth = 6,
+  features = NULL, dep_var = NULL)
 }
 \arguments{
 \item{data}{A dataframe: all character variables must be factors, and the dependent

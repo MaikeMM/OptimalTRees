@@ -2,9 +2,10 @@
 % Please edit documentation in R/local_search_functions.R
 \name{find_best_feature_split}
 \alias{find_best_feature_split}
-\title{Find best split value for certain feature}
+\title{Find best split value for certain feature with weighted observations}
 \usage{
-find_best_feature_split(feature, object.subdtree, datasub, minleafsize)
+find_best_feature_split(feature, object.subdtree, datasub, weightssub,
+  minleafsize, misclassification_weights)
 }
 \arguments{
 \item{feature}{Character name of feature that will be split on.}

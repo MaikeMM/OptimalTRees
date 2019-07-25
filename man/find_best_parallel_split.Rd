@@ -4,7 +4,8 @@
 \alias{find_best_parallel_split}
 \title{Find best parallel split}
 \usage{
-find_best_parallel_split(object.subdtree, datasub, minleafsize)
+find_best_parallel_split(object.subdtree, datasub, weightssub, minleafsize,
+  misclassification_weights)
 }
 \arguments{
 \item{object.subdtree}{Object of class dtree. The split of the rootnode will be optimized.}

@@ -4,7 +4,8 @@
 \alias{prune}
 \title{Prune OCT}
 \usage{
-prune(object.dtree, trainingdata, validationdata)
+prune(object.dtree, trainingdata, validationdata, trainingweights,
+  validationweights, misclassification_weights)
 }
 \arguments{
 \item{object.dtree}{An object of class dtree}

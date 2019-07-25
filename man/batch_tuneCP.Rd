@@ -4,7 +4,8 @@
 \alias{batch_tuneCP}
 \title{Find optimal parameter alpha for OCT}
 \usage{
-batch_tuneCP(trees, losses, trainingdata, validationdata)
+batch_tuneCP(trees, losses, trainingdata, validationdata, trainingweights,
+  validationweights, misclassification_weights)
 }
 \arguments{
 \item{trees}{A list of dtree objects}

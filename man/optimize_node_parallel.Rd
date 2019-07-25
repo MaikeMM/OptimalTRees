@@ -4,7 +4,8 @@
 \alias{optimize_node_parallel}
 \title{Perform Optimize Node Parallel procedure}
 \usage{
-optimize_node_parallel(subtree, datasub, data, alpha, minleafsize)
+optimize_node_parallel(subtree, datasub, weightssub, data, weights, alpha,
+  minleafsize, misclassification_weights)
 }
 \arguments{
 \item{subtree}{A list with an object of class dtree, the associated branchnodes

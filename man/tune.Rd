@@ -4,8 +4,9 @@
 \alias{tune}
 \title{Find optimal parameters (alpha and depth) for OCT}
 \usage{
-tune(trainingdata, validationdata, features, dep_var, maxdepth,
-  minleafsize, numbertries)
+tune(trainingdata, validationdata, trainingweights, validationweights,
+  features, dep_var, maxdepth, minleafsize, numbertries,
+  misclassification_weights)
 }
 \arguments{
 \item{trainingdata}{Dataframe that will be used to train the OCT}

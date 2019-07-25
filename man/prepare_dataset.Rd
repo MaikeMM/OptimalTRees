@@ -4,7 +4,7 @@
 \alias{prepare_dataset}
 \title{Prepare dataset for local search procedure}
 \usage{
-prepare_dataset(data, features, dep_var)
+prepare_dataset(data, weights, features, dep_var)
 }
 \arguments{
 \item{data}{A dataframe}

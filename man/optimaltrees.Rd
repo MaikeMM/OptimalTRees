@@ -4,8 +4,9 @@
 \alias{optimaltrees}
 \title{Create the optimal classification tree (OCT)}
 \usage{
-optimaltrees(formula, data, maxdepth = 6, minleafsize = 1,
-  numbertries = 10)
+optimaltrees(formula, data, weights = NULL, maxdepth = 6,
+  minleafsize = 1, numbertries = 10,
+  misclassification_weights = NULL)
 }
 \arguments{
 \item{formula}{An object of class "formula" (or one that can be coerced to that class):

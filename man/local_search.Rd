@@ -4,8 +4,8 @@
 \alias{local_search}
 \title{Perform local search procedure to find OCT}
 \usage{
-local_search(object.dtree, data, alpha = 0, minleafsize = 1,
-  maxdepth = 6)
+local_search(object.dtree, data, weights = NULL, alpha = 0,
+  minleafsize = 1, maxdepth = 6, misclassification_weights = NULL)
 }
 \arguments{
 \item{object.dtree}{Object of class dtree, usually a tree created by CART procedure
