@@ -254,13 +254,14 @@ find_subtree <- function(rootnode, object.dtree){
 #' @return A list with data being a dataframe with normalized numeric features, and all other variables factors,
 #' and a matrix with the minimum and maximum values of all numeric features.
 #' @export
+#' @importFrom dplyr select
 prepare_dataset <- function(data, weights, features, dep_var){
   norm_feat <- function(value, minvec, maxvec){
     (value - minvec) / (maxvec - minvec)
   }
   minmax <- matrix(0, nrow = 2, ncol = length(features))
 
-  smalldata <-dplyr::select(data, c(features, dep_var))
+  smalldata <- dplyr::select(data, c(features, dep_var))
   na_cases <- which(!complete.cases(data))
   if (length(na_cases) > 0) {data <- smalldata[-na_cases, ]; weights <- weights[-na_cases]}
   for (feature in features){
