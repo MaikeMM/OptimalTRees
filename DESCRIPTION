@@ -1,0 +1,19 @@
+Package: OptimalTRees
+Type: Package
+Title: Make Optimal Classification Trees 
+Version: 0.2.0
+Authors@R: person("Maike", "Meier", email = "maikemeier@hotmail.com",
+  role = c("aut", "cre"))
+Maintainer: Maike Meier <maikemeier@hotmail.com>
+Description: Make Optimal Classification Trees with local search algorithm 
+    as described in 'Optimal trees for prediction and prescription' by Jack 
+    William Dunn.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    diagram,
+    useful,
+    parallel
+RoxygenNote: 6.1.1
