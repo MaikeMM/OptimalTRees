@@ -261,7 +261,7 @@ prepare_dataset <- function(data, weights, features, dep_var){
   }
   minmax <- matrix(0, nrow = 2, ncol = length(features))
 
-  smalldata <- dplyr::select(data, c(features, dep_var))
+  smalldata <- select(data, c(features, dep_var))
   na_cases <- which(!complete.cases(data))
   if (length(na_cases) > 0) {data <- smalldata[-na_cases, ]; weights <- weights[-na_cases]}
   for (feature in features){
