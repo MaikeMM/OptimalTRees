@@ -13,6 +13,10 @@ tune(trainingdata, validationdata, trainingweights, validationweights,
 
 \item{validationdata}{Dataframe that will be used to validate the OCT}
 
+\item{trainingweights}{Training weights}
+
+\item{validationweights}{Validation wights}
+
 \item{features}{Character array of the features that will be used in training the OCT}
 
 \item{dep_var}{Character that indicated the dependent variable (class name)}

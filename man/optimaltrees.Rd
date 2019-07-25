@@ -15,6 +15,8 @@ a symbolic description of the model to be fitted.}
 \item{data}{A dataframe: all character variables must be factors, and the dependent
 variable must be a factor. NA rows will be deleted.}
 
+\item{weights}{weights}
+
 \item{maxdepth}{Set the maximum depth of any node of the final tree,
 with the root node counted as depth 0.}
 

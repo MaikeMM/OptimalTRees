@@ -193,11 +193,11 @@ visualize_tree <- function(object.dtree){
       decision_parameter <- features[which(A[, node] == 1)]
       if (bvec[node] != 0){
         decision_value <- bvec[node]
-        textrect   (midnode ,radx = .055, rady = .04, cex = textsize, shadow.size = 0,
+        textrect   (midnode ,radx = .055, rady = .04, cex = 0.8, shadow.size = 0,
                     lab = paste(decision_parameter, "\n", '<', round(decision_value, 2)))
       } else {
         decision_value <- cats[[node]]
-        textrect   (midnode, radx = .055, rady = .04, cex = textsize, shadow.size = 0,
+        textrect   (midnode, radx = .055, rady = .04, cex = 0.8, shadow.size = 0,
                     lab = paste(decision_parameter, "\n", 'is', paste(decision_value, collapse = " or ")))
       }
     }
@@ -206,7 +206,7 @@ visualize_tree <- function(object.dtree){
   for (node in (numberbranchnodes + 1):(numberbranchnodes + numberleafnodes)){
     if (!is.na(leaf_classes[index])){
       class_node <- leaf_classes[index]
-      textellipse   (elpos[node,], radx = .025, rady = .025, cex = textsize, shadow.size = 0,
+      textellipse   (elpos[node,], radx = .025, rady = .025, cex = 0.8, shadow.size = 0,
                   lab = paste(class_node))
     }
     index <- index + 1

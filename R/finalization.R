@@ -8,13 +8,15 @@
 #' a symbolic description of the model to be fitted.
 #' @param data A dataframe: all character variables must be factors, and the dependent
 #' variable must be a factor. NA rows will be deleted.
+#' @param weights weights
 #' @param maxdepth Set the maximum depth of any node of the final tree,
 #' with the root node counted as depth 0.
 #' @param minleafsize The minimum number of observations in any terminal <leaf> node.
 #' @param numbertries The number of searches that will be performed at each possible depth,
 #' to tune the parameters and find the optimal tree.
+#' @param misclassification_weights
 #' @return An object of class dtree that is the optimal classification tree
-
+#' @export
 optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsize = 1, numbertries = 10, misclassification_weights = NULL){
   if (is.null(weights)) weights <- rep(1, nrow(data))
   if (nrow(data) != length(weights)) stop("dataframe row dimension and weights length must be the same")
@@ -56,7 +58,6 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
 
   # Find new batch of trees with optimal parameters
   cat('final batch with alpha = ', optimalparams$alphabest, ' and D = ', optimalparams$Dbest, 'at ', format(Sys.time(), "%X"), '\n')
-  tic()
   results <- mclapply(X = 1:numbertries, FUN = function(i){
     CART <- makeCART(data = trainingdata, trainingweights, maxdepth = optimalparams$Dbest, minleafsize = minleafsize, features = features, dep_var = dep_var)
     newtree <- local_search(object.dtree = CART, data = trainingdata, trainingweights, alpha = optimalparams$alphabest, maxdepth = optimalparams$Dbest,
@@ -68,7 +69,6 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
     trees[[try]] <- results[[try]]$object.dtree
     losses[try] <- results[[try]]$loss
   }
-  toc()
 
   # For each tree in batch, find misclassification on full dataset
   misclasspertree <- function(object.dtree, data, weights){
@@ -108,6 +108,8 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
 #' to that depth.
 #' @param trainingdata Dataframe that will be used to train the OCT
 #' @param validationdata Dataframe that will be used to validate the OCT
+#' @param trainingweights Training weights
+#' @param validationweights Validation wights
 #' @param features Character array of the features that will be used in training the OCT
 #' @param dep_var Character that indicated the dependent variable (class name)
 #' @param maxdepth Set the maximum depth of any node of the final tree,
@@ -115,8 +117,10 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
 #' @param minleafsize The minimum number of observations in any terminal <leaf> node.
 #' @param numbertries The number of searches that will be performed at each possible depth,
 #' to tune the parameters and find the optimal tree.
+#' @param misclassification_weights
 #' @return A list of two - $vbest gives the misclassification on the validation set at
 #' optimal alpha $bestalpha
+#' @export
 tune <- function(trainingdata, validationdata, trainingweights, validationweights, features, dep_var, maxdepth, minleafsize, numbertries, misclassification_weights){
   # Decide how many trees will be selected for pruning
   batchsize <- max(2, floor(numbertries * 0.1))
@@ -127,7 +131,6 @@ tune <- function(trainingdata, validationdata, trainingweights, validationweight
   vbest <- Inf
   for (D in 1:maxdepth){
     cat('at depth ', D, 'at ', format(Sys.time(), "%X"), '\n')
-    tic()
     # Create batch of 'numbertries' trees and select 'batchsize' of these with the lowest loss.
     treesatdepth <- vector('list', batchsize); lossesatdepth <- rep(Inf, batchsize)
     if (D == 1){
@@ -156,7 +159,6 @@ tune <- function(trainingdata, validationdata, trainingweights, validationweight
       #  lossesatdepth[index] <- newtree$loss
       #}
     }
-    toc()
     # Find optimal alpha and corresponding misclassficiation
     params <- batch_tuneCP(trees = treesatdepth, losses = lossesatdepth, trainingdata = trainingdata,
                           validationdata = validationdata, trainingweights, validationweights, misclassification_weights = misclassification_weights)
