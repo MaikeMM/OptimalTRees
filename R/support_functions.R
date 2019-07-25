@@ -252,6 +252,7 @@ find_subtree <- function(rootnode, object.dtree){
 #' @param dep_var Character that indicated the dependent variable (class name)
 #' @return A list with data being a dataframe with normalized numeric features, and all other variables factors,
 #' and a matrix with the minimum and maximum values of all numeric features.
+#' @export
 prepare_dataset <- function(data, weights, features, dep_var){
   norm_feat <- function(value, minvec, maxvec){
     (value - minvec) / (maxvec - minvec)
