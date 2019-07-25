@@ -122,6 +122,7 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
 #' @return A list of two - $vbest gives the misclassification on the validation set at
 #' optimal alpha $bestalpha
 #' @export
+#' @importFrom parallel mclapply
 tune <- function(trainingdata, validationdata, trainingweights, validationweights, features, dep_var, maxdepth, minleafsize, numbertries, misclassification_weights){
   # Decide how many trees will be selected for pruning
   batchsize <- max(2, floor(numbertries * 0.1))
