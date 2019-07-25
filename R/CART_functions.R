@@ -201,7 +201,7 @@ makeCART <- function(data, weights = NULL, minleafsize = 1, maxdepth = 6, featur
       object.dtree <- cut_tree_fun(object.dtree)
     }
   }
-  object.dtree@leaf_classes <- find_where_and_leafs(object.dtree, data, weights)
+  object.dtree@leaf_classes <- find_where_and_leafs(object.dtree, data, weights)$leaf_classes
   return(object.dtree)
 }
 
