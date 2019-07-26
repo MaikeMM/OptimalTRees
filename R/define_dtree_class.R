@@ -250,6 +250,9 @@ visualize_tree_data <- function(object.dtree, data, weights){
 
   sumtotal <- sum(weights)
 
+  titl <- paste0("Decision Tree")
+  openplotmat(main = titl)
+
   textsize <- 1 - (depthtree ** 1.2)*0.1
 
   rec_width <- strwidth(paste0('(', paste0(round(where[1,]/sum(where[1,]), 2), collapse = ", "), ')'), cex = textsize)*1.5
@@ -303,9 +306,6 @@ visualize_tree_data <- function(object.dtree, data, weights){
   nr     <- nrow(fromto)
 
   arrpos <- matrix(ncol = 2, nrow = nr)
-
-  titl <- paste0("Decision Tree")
-  openplotmat(main = titl)
 
   for (i in 1:nr) {
     arrpos[i, ] <-  bentarrow (
