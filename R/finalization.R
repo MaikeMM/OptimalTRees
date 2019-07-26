@@ -24,12 +24,21 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
   if (minleafsize < 0) stop('minleafsize must be nonnegative')
   if (maxdepth < 1) stop('maxdepth must be positive')
   if (numbertries < 2) stop('numbertries must be greater than 1')
+
   # Obtain features and dependent variable from formula input
   mod <- as.formula(formula)
   dep_var <- all.vars(mod)[1]
   features <- tail(all.vars(mod), -1)
   if (features[1] == "."){
     features <- (names(data))[names(data) != dep_var]
+  }
+
+  if (!(all(features %in% colnames(data)))) {
+    badfeatures <- features[which(!(features %in% colnames(data)))]
+    mess <- paste('features', paste(badfeatures, collapse = ' and '), 'are not present in the data')
+    stop(mess)
+  } else if (!(dep_var %in% colnames(data))){
+    stop(paste(dep_var, 'is not present in the data'))
   }
 
   # Prepare the data (normalize numeric features and let character features be factors)
@@ -123,7 +132,16 @@ optimaltrees <- function(formula, data, weights = NULL, maxdepth = 6, minleafsiz
 #' optimal alpha $bestalpha
 #' @export
 #' @importFrom parallel mclapply
-tune <- function(trainingdata, validationdata, trainingweights, validationweights, features, dep_var, maxdepth, minleafsize, numbertries, misclassification_weights){
+tune <- function(trainingdata, validationdata, trainingweights = NULL, validationweights = NULL, features, dep_var, maxdepth, minleafsize, numbertries, misclassification_weights){
+  if (is.null(trainingweights)) trainingweights <- rep(1, nrow(trainingdata))
+  if (is.null(validationweights)) validationweights <- rep(1, nrow(validationdata))
+  if (nrow(trainingdata) != length(trainingweights)) stop("training dataframe row dimension and training weights length must be the same")
+  if (nrow(validationdata) != length(validationweights)) stop("validation dataframe row dimension and validation weights length must be the same")
+  if (minleafsize < 0) stop('minleafsize must be nonnegative')
+  if (maxdepth < 1) stop('maxdepth must be positive')
+  if (numbertries < 2) stop('numbertries must be greater than 1')
+
+
   # Decide how many trees will be selected for pruning
   batchsize <- max(2, floor(numbertries * 0.1))
 
